@@ -1,0 +1,43 @@
+/* BREAKPOINT */
+$phone: 576px;
+$tablet: 768px;
+$desktop: 992px;
+$large-desktop: 1200px;
+$extra-large-desktop: 1400px;
+
+@mixin phone {
+  @media screen and (max-width: $phone) {
+    @content;
+  }
+}
+
+@mixin tablet {
+  @media screen and (min-width: $phone) and (max-width: $tablet) {
+    @content;
+  }
+}
+
+@mixin desktop {
+  @media screen and (min-width: $tablet) and (max-width: $desktop) {
+    @content;
+  }
+}
+
+@mixin large-desktop {
+  @media screen and (min-width: $desktop) and (max-width: $large-desktop) {
+    @content;
+  }
+}
+
+@mixin extra-large-desktop {
+  @media screen and (min-width: $large-desktop) and (max-width: $extra-large-desktop) {
+    @content;
+  }
+}
+
+@mixin xxl-desktop {
+  @media screen and (min-width: $extra-large-desktop) {
+    @content;
+  }
+}
+
