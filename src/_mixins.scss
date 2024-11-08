@@ -5,6 +5,42 @@ $desktop: 992px;
 $large-desktop: 1200px;
 $extra-large-desktop: 1400px;
 
+
+//  map holding breakpoint values
+$breakpoints: (
+        phone: 576px,
+        tablet: 768px,
+        desktop: 992px,
+        large-desktop: 1200px,
+        extra-large-desktop: 1400px
+);
+
+@mixin media($keys...) {
+  @each $key in $keys {
+    @if ($key == phone) {
+      @include phone {
+        @content
+      }
+    } @else if ($key == tablet) {
+      @include tablet {
+        @content
+      }
+    } @else if ($key == desktop) {
+      @include desktop {
+        @content
+      }
+    } @else if ($key == large-desktop) {
+      @include large-desktop {
+        @content
+      }
+    } @else if ($key == extra-large-desktop) {
+      @include extra-large-desktop {
+        @content
+      }
+    }
+  }
+}
+
 @mixin phone {
   @media screen and (max-width: $phone) {
     @content;
