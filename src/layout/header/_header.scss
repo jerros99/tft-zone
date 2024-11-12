@@ -46,7 +46,14 @@ $title-width: 120px;
   }
 
   // Not displaying navigation menu when screen is small => Show menu button added instead
-  @include media(tablet,phone, desktop) {
+  @include media(tablet,phone) {
+    .navigation{
+      display: none;
+    }
+  }
+
+  // Not displaying navigation menu when screen is small => Show menu button added instead
+  @include media(desktop) {
     .navigation{
       display: none;
     }
