@@ -1,0 +1,13 @@
+@import "variables";
+@import "layout/index";
+@import "pages/index";
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+.app {
+  position: absolute;
+  height: 100%;
+  width: 100%;
+  background-color: $background-color;
+  font-family: 'Poppins', sans-serif;
+  overflow: hidden;
+}
