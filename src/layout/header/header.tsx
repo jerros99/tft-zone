@@ -1,5 +1,5 @@
-import React, {ChangeEvent, ChangeEventHandler, useState} from 'react';
-import icon from '../../assets/icon.webp'
+import React, {ChangeEvent, useState} from 'react';
+import {fetchSummoner} from "../../api/Summoner/SummonerApi";
 
 export function Header() {
     const [summonerName, setSummonerName] = useState("");
@@ -9,7 +9,8 @@ export function Header() {
     }
 
     const checkSummoner = (): Object => {
-        // TODO
+        console.log(summonerName)
+        fetchSummoner(summonerName);
         return {};
     }
 
@@ -32,8 +33,8 @@ export function Header() {
                     value={summonerName}
                     src={summonerName}
                     onChange={onSummonerNameChange}
-                    onKeyDown={checkSummoner}
                 />
+                <button onClick={checkSummoner}>Go</button>
             </div>
         </div>
     );
