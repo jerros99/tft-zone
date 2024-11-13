@@ -1,4 +1,3 @@
-import {SummonerType} from "./SummonerType";
 import {SUMMONER_BASE_URL} from "./SummonerConfig";
 import {API_KEY} from "../ApiConfig";
 

@@ -1,7 +1,8 @@
 import React, {ChangeEvent, useState} from 'react';
 import {fetchSummonerBySummonerName} from "../../api/Summoner/SummonerApi";
 import {SummonerType} from "../../api/Summoner/SummonerType";
-import {fetchGameIdsByPuuid} from "../../api/Game/GameApi";
+import {fetchGameById, fetchGameIdsByPuuid} from "../../api/Game/GameApi";
+import {Game, Participant} from "../../api/Game/GameType";
 
 export function Header() {
     const [summonerName, setSummonerName] = useState("");
@@ -11,12 +12,21 @@ export function Header() {
     }
 
     const checkSummoner = (): Object => {
-        console.log(summonerName)
         fetchSummonerBySummonerName(summonerName)
             .then((response: Response) => response.json())
             .then((summoner: SummonerType) => {
                 const puuid: string = summoner.puuid;
-                fetchGameIdsByPuuid(puuid);
+                fetchGameIdsByPuuid(puuid)
+                    .then((response: Response)=> response.json())
+                    .then((ids: string[]) => {
+                        const gameId1 : string = ids[0]
+                        fetchGameById(gameId1).then((response) => response.json())
+                            .then((game: Game) => {
+                                const participants: Participant[] = game.info.participants;
+                                const targetParticipant: Participant | undefined = participants.find((participant: Participant)=> participant.puuid === puuid)
+                                console.log(targetParticipant);
+                            });
+                    });
             });
         return {};
     }
