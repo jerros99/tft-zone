@@ -1,5 +1,7 @@
 import React, {ChangeEvent, useState} from 'react';
-import {fetchSummoner} from "../../api/Summoner/SummonerApi";
+import {fetchSummonerBySummonerName} from "../../api/Summoner/SummonerApi";
+import {SummonerType} from "../../api/Summoner/SummonerType";
+import {fetchGameIdsByPuuid} from "../../api/Game/GameApi";
 
 export function Header() {
     const [summonerName, setSummonerName] = useState("");
@@ -10,7 +12,12 @@ export function Header() {
 
     const checkSummoner = (): Object => {
         console.log(summonerName)
-        fetchSummoner(summonerName);
+        fetchSummonerBySummonerName(summonerName)
+            .then((response: Response) => response.json())
+            .then((summoner: SummonerType) => {
+                const puuid: string = summoner.puuid;
+                fetchGameIdsByPuuid(puuid);
+            });
         return {};
     }
 
