@@ -1,9 +1,10 @@
-import React, {ChangeEvent, useState} from 'react';
+import React, {ChangeEvent, useContext, useState} from 'react';
 import {useTFTData} from "../../hooks/useTFTData";
+import {TFTDataContext} from "../../App";
 
 export function Header() {
     const [summonerName, setSummonerName] = useState("");
-    const {analyzePlayerStatistic} = useTFTData();
+    const {analyzePlayerStatistic} = useContext(TFTDataContext);
     const updateSummonerName = (event: ChangeEvent<HTMLInputElement>): void => {
         setSummonerName(event.target.value);
     }

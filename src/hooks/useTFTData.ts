@@ -11,6 +11,7 @@ export function useTFTData() {
     const [error, setError] = useState<string | null>(null);
 
     const [dataCounter, setDataCounter] = useState(0);
+    const [totalGame, setTotalGame] = useState(0);
 
     // Data about a summoner
     const [unitData, setUnitData] = useState(new Map<string, number[]>());
@@ -78,6 +79,7 @@ export function useTFTData() {
 
             const gamesResponse = await fetchGameIdsByPuuid(puuid);
             const gameIds: string[] = await gamesResponse.json();
+            setTotalGame(gameIds.length);
 
             for (const gameId of gameIds) {
                 setDataCounter((dataCounter) => dataCounter + 1)
@@ -109,6 +111,9 @@ export function useTFTData() {
         analyzePlayerStatistic,
         playerStatistic,
         dataCounter,
+        isLoading,
+        error,
+        totalGameData: totalGame,
     };
 }
 
