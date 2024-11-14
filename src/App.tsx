@@ -1,5 +1,4 @@
 import React, {createContext} from 'react';
-import logo from './logo.svg';
 import './App.scss';
 import {Header} from "./layout/header/header";
 import {HomePage} from "./pages/home-page/HomePage";
@@ -14,7 +13,7 @@ interface TFTDataContextType {
 
 export const TFTDataContext = createContext<TFTDataContextType>({
     isLoading: false,
-    analyzePlayerStatistic: (summonerName: string) => {},
+    analyzePlayerStatistic: () => {},
     dataCounter: 0,
     totalGameData: 0,
 });

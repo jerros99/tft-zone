@@ -1,5 +1,4 @@
 import React, {ChangeEvent, useContext, useState} from 'react';
-import {useTFTData} from "../../hooks/useTFTData";
 import {TFTDataContext} from "../../App";
 
 export function Header() {
