@@ -15,6 +15,7 @@ export type Info = {
 }
 
 export type Participant = {
+    augments: string[];
     gold_left: number;
     last_round: number;
     level: number;
@@ -49,4 +50,25 @@ export type Unit = {
 export type Game = {
     info: Info;
     metadata: Metadata;
+}
+
+export enum StatisticEnum {
+    TRAIT = "TRAIT",
+    UNIT = "UNIT",
+    AUGMENT = "AUGMENT",
+}
+
+export type Statistic = {
+    type: StatisticEnum,
+    id: string,
+    totalGame: number,
+    win: number,
+    top: number,
+    placement: number,
+}
+
+export type PlayerStatistic = {
+    augmentStatistic: Statistic[],
+    unitStatistic: Statistic[],
+    traitStatistic: Statistic[],
 }
