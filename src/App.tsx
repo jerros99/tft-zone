@@ -24,9 +24,7 @@ function App() {
         <div className="app">
             <TFTDataContext.Provider value={{ isLoading, analyzePlayerStatistic, dataCounter, totalGameData }}>
                 <Header/>
-                <HomePage >
-                    Test
-                </HomePage>
+                <HomePage />
             </TFTDataContext.Provider>
         </div>
     );
