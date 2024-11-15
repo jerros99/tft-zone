@@ -3,6 +3,7 @@ import './App.scss';
 import {Header} from "./layout/header/header";
 import {HomePage} from "./pages/home-page/HomePage";
 import {useTFTData} from "./hooks/useTFTData";
+import {Footer} from "./layout/footer/Footer";
 
 interface TFTDataContextType {
     isLoading: boolean;
@@ -23,8 +24,9 @@ function App() {
     return (
         <div className="app">
             <TFTDataContext.Provider value={{ isLoading, analyzePlayerStatistic, dataCounter, totalGameData }}>
-                <Header/>
+                <Header />
                 <HomePage />
+                <Footer />
             </TFTDataContext.Provider>
         </div>
     );

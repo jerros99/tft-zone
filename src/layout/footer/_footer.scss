@@ -1,0 +1,12 @@
+@import "src/variables";
+
+.footer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: $footer-height;
+  padding: 0 10px;
+  color: white;
+  font-size: 11px;
+}
