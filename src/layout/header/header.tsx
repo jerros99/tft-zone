@@ -1,5 +1,4 @@
 import React, {ChangeEvent, useContext, useState} from 'react';
-import {TFTDataContext} from "../../App";
 import {useNavigate} from "react-router-dom";
 import {summonerPath} from "../../routes/Routes";
 
