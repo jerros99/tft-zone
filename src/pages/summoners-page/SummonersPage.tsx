@@ -1,11 +1,11 @@
-import React, {useContext, useEffect} from 'react';
+import React, {useEffect} from 'react';
 import {Loader} from "../../component/loader/Loader";
 import {useParams} from "react-router-dom";
 import {useTFTData} from "../../hooks/useTFTData";
 
 export function SummonersPage() {
     const {summonerName} = useParams();
-    const {isLoading, analyzePlayerStatistic, playerStatistic, loadingPercentage} = useTFTData();
+    const {isLoading, analyzePlayerStatistic, loadingPercentage} = useTFTData();
 
     useEffect(() => {
         if (summonerName) {

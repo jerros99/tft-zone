@@ -1,5 +1,4 @@
 import {GAME_BASE_URL} from "./GameConfig";
-import {Game, Participant} from "./GameType";
 
 export const fetchGameIdsByPuuid = (puuid: string): Promise<Response> => {
     return fetch(`${GAME_BASE_URL}/tft/match/v1/matches/by-puuid/${puuid}/ids`, {

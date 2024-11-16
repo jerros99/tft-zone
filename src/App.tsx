@@ -1,8 +1,7 @@
-import React, {createContext} from 'react';
+import React from 'react';
 import './App.scss';
 import {Header} from "./layout/header/header";
 import {HomePage} from "./pages/home-page/HomePage";
-import {useTFTData} from "./hooks/useTFTData";
 import {Footer} from "./layout/footer/Footer";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
 import {Content} from "./layout/content/Content";

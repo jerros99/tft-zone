@@ -1,4 +1,4 @@
-import React, {ChangeEvent, useContext, useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import {useNavigate} from "react-router-dom";
 import {summonerPath} from "../../routes/Routes";
 
