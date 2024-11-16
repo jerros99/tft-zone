@@ -12,7 +12,6 @@ export const fetchGameIdsByPuuid = (puuid: string): Promise<Response> => {
 
 
 export const fetchGameById = (matchId: string): Promise<Response> => {
-    console.log( process.env["REACT_APP_API_KEY"])
     return fetch(`${GAME_BASE_URL}/tft/match/v1/matches/${matchId}`, {
         method: 'GET',
         headers: {
