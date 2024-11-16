@@ -10,8 +10,7 @@ export function useTFTData() {
     const [isLoading, setIsLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
 
-    const [dataCounter, setDataCounter] = useState(0);
-    const [totalGame, setTotalGame] = useState(0);
+    const [loadingPercentage, setLoadingPercentage] = useState(0);
 
     // Data about a summoner
     const [unitData, setUnitData] = useState(new Map<string, number[]>());
@@ -79,10 +78,11 @@ export function useTFTData() {
 
             const gamesResponse = await fetchGameIdsByPuuid(puuid);
             const gameIds: string[] = await gamesResponse.json();
-            setTotalGame(gameIds.length);
+            let gameCounter: number = 0;
 
             for (const gameId of gameIds) {
-                setDataCounter((dataCounter) => dataCounter + 1)
+                gameCounter = gameCounter + 1;
+                setLoadingPercentage(Math.round((gameCounter / gameIds.length) * 100));
                 const response: Response = await fetchGameById(gameId);
                 const game: Game = await response.json();
 
@@ -102,7 +102,7 @@ export function useTFTData() {
         } catch (err) {
             setError('Error fetching data');
         } finally {
-            setDataCounter(0);
+            setLoadingPercentage(0);
             setIsLoading(false);
         }
     }
@@ -110,10 +110,9 @@ export function useTFTData() {
     return {
         analyzePlayerStatistic,
         playerStatistic,
-        dataCounter,
+        loadingPercentage,
         isLoading,
         error,
-        totalGameData: totalGame,
     };
 }
 
