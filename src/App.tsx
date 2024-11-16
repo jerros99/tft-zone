@@ -5,6 +5,7 @@ import {HomePage} from "./pages/home-page/HomePage";
 import {useTFTData} from "./hooks/useTFTData";
 import {Footer} from "./layout/footer/Footer";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
+import {Content} from "./layout/content/Content";
 
 interface TFTDataContextType {
     isLoading: boolean;
@@ -15,7 +16,8 @@ interface TFTDataContextType {
 
 export const TFTDataContext = createContext<TFTDataContextType>({
     isLoading: false,
-    analyzePlayerStatistic: () => {},
+    analyzePlayerStatistic: () => {
+    },
     dataCounter: 0,
     totalGameData: 0,
 });
@@ -24,14 +26,16 @@ function App() {
     const {isLoading, analyzePlayerStatistic, dataCounter, totalGameData} = useTFTData();
     return (
         <div className="app">
-            <TFTDataContext.Provider value={{ isLoading, analyzePlayerStatistic, dataCounter, totalGameData }}>
-               <BrowserRouter>
-                <Header />
-                <Routes>
-                    <Route path={"/"} element={<HomePage />} />
-                </Routes>
-                <Footer />
-               </BrowserRouter>
+            <TFTDataContext.Provider value={{isLoading, analyzePlayerStatistic, dataCounter, totalGameData}}>
+                <BrowserRouter>
+                    <Header/>
+                    <Content>
+                        <Routes>
+                            <Route path={"/"} element={<HomePage/>}/>
+                        </Routes>
+                    </Content>
+                    <Footer/>
+                </BrowserRouter>
             </TFTDataContext.Provider>
         </div>
     );
