@@ -52,6 +52,13 @@ export type Game = {
     metadata: Metadata;
 }
 
+export type SummonerPlacementData = {
+    games: Game[],
+    unitPlacement: Map<string, number[]>,
+    augmentPlacement: Map<string, number[]>,
+    traitPlacement: Map<string, number[]>,
+}
+
 export enum StatisticEnum {
     TRAIT = "TRAIT",
     UNIT = "UNIT",
@@ -67,7 +74,8 @@ export type Statistic = {
     placement: number,
 }
 
-export type PlayerStatistic = {
+export type SummonerStatistic = {
+    games: Game[],
     augmentStatistic: Statistic[],
     unitStatistic: Statistic[],
     traitStatistic: Statistic[],
