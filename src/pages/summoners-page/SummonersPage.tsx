@@ -2,7 +2,6 @@ import React, {useEffect} from 'react';
 import {Loader} from "../../component/loader/Loader";
 import {useParams} from "react-router-dom";
 import {useTFTData} from "../../hooks/useTFTData";
-import {SummonerStatistic} from "../../api/Game/GameType";
 
 export function SummonersPage() {
     const {summonerName} = useParams();
