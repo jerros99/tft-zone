@@ -70,11 +70,11 @@ export function useTFTData() {
 
             const gamesResponse = await fetchGameIdsByPuuid(puuid);
             const gameIds: string[] = await gamesResponse.json();
-            let gameCounter: number = 0;
+            let processedGameCount: number = 0;
 
             for (const gameId of gameIds) {
-                gameCounter = gameCounter + 1;
-                setLoadingPercentage(Math.round((gameCounter / gameIds.length) * 100));
+                processedGameCount = processedGameCount + 1;
+                setLoadingPercentage(Math.round((processedGameCount / gameIds.length) * 100));
                 const response: Response = await fetchGameById(gameId);
                 const game: Game = await response.json();
                 games.push(game);
@@ -119,7 +119,7 @@ export function useTFTData() {
     }
 
     return {
-        getPlayerStatistic: getSummonerStatistic,
+        getSummonerStatistic,
         loadingPercentage,
         isLoading,
         error,
