@@ -1,10 +1,18 @@
 import {useState} from 'react';
 import {fetchSummonerBySummonerName} from "../api/Summoner/SummonerApi";
 import {fetchGameById, fetchGameIdsByPuuid} from "../api/Game/GameApi";
-import {Game, Participant, PlayerStatistic, Statistic, StatisticEnum, Trait, Unit} from "../api/Game/GameType";
+import {
+    Game,
+    Participant,
+    PlayerPlacementData,
+    PlayerStatistic,
+    Statistic,
+    StatisticEnum,
+    Trait,
+    Unit
+} from "../api/Game/GameType";
 import {SummonerType} from "../api/Summoner/SummonerType";
 import {delay} from "../utils/utils";
-
 
 export function useTFTData() {
     const [isLoading, setIsLoading] = useState(false);
@@ -12,59 +20,43 @@ export function useTFTData() {
 
     const [loadingPercentage, setLoadingPercentage] = useState(0);
 
-    // Data about a summoner
-    const [unitData, setUnitData] = useState(new Map<string, number[]>());
-    const [augmentData, setAugmentData] = useState(new Map<string, number[]>());
-    const [traitData, setTraitData] = useState(new Map<string, number[]>());
-    const [playerStatistic, setPlayerStatistic] = useState<PlayerStatistic>();
-
-    const addUnitData = (champion: string, placement: number): void => {
-        const existingPlacements: number[] = unitData.get(champion) || [];
-        const analyserMap: Map<string, number[]> = unitData.set(champion, [...existingPlacements, placement]);
-        setUnitData(analyserMap);
-    }
-
-    const addAugmentData = (augment: string, placement: number): void => {
-        const existingPlacements: number[] = augmentData.get(augment) || [];
-        const analyserMap: Map<string, number[]> = augmentData.set(augment, [...existingPlacements, placement]);
-        setAugmentData(analyserMap);
-    }
-
-    const addTraitData = (trait: string, placement: number): void => {
-        const existingPlacements: number[] = traitData.get(trait) || [];
-        const analyserMap: Map<string, number[]> = traitData.set(trait, [...existingPlacements, placement]);
-        setTraitData(analyserMap);
-    }
-
-    const getDataStatistic = (data:  Map<string, number[]>, dataType: StatisticEnum): Statistic[] => {
+    const getStatistic = (placementsMap: Map<string, number[]>, dataType: StatisticEnum): Statistic[] => {
         const statistics: Statistic[] = []
-        data.forEach((value: number[], key: string)=> {
+        placementsMap.forEach((value: number[], key: string) => {
             const stat: Statistic = {
                 type: dataType,
                 id: key,
                 totalGame: value.length,
                 top: value.filter((placement: number) => placement <= 4).length,
                 win: value.filter((placement: number) => placement === 1).length,
-                placement: value.reduce((accumulator: number, placement: number) => accumulator + placement, 0)/ value.length,
+                placement: value.reduce((accumulator: number, placement: number) => accumulator + placement, 0) / value.length,
             };
             statistics.push(stat)
         })
         return statistics;
     }
 
-    async function analyzePlayerStatistic(summonnerName: string) {
-        await fetchGameData(summonnerName);
+    async function getPlayerStatistic(summonerName: string): Promise<PlayerStatistic | undefined> {
+        const playerAnalyticsData: PlayerPlacementData | undefined = await getGameData(summonerName);
 
-        const playerStat: PlayerStatistic = {
-            augmentStatistic: getDataStatistic(augmentData, StatisticEnum.AUGMENT),
-            traitStatistic: getDataStatistic(traitData, StatisticEnum.TRAIT),
-            unitStatistic: getDataStatistic(unitData, StatisticEnum.UNIT),
+        if (playerAnalyticsData) {
+            return {
+                games: playerAnalyticsData?.games,
+                augmentStatistic: getStatistic(playerAnalyticsData?.augmentPlacement, StatisticEnum.AUGMENT),
+                traitStatistic: getStatistic(playerAnalyticsData?.traitPlacement, StatisticEnum.TRAIT),
+                unitStatistic: getStatistic(playerAnalyticsData?.unitPlacement, StatisticEnum.UNIT),
+            };
+
         }
 
-        setPlayerStatistic(playerStat);
+        return undefined;
     }
 
-    async function fetchGameData(summonerName: string): Promise<void> {
+    async function getGameData(summonerName: string): Promise<PlayerPlacementData | undefined> {
+        const games: Game[] = [];
+        let unitPlacements: Map<string, number[]> = new Map<string, number[]>();
+        let augmentPlacements: Map<string, number[]> = new Map<string, number[]>();
+        let traitPlacements: Map<string, number[]> = new Map<string, number[]>();
         try {
             if (isLoading) {
                 return;
@@ -85,7 +77,7 @@ export function useTFTData() {
                 setLoadingPercentage(Math.round((gameCounter / gameIds.length) * 100));
                 const response: Response = await fetchGameById(gameId);
                 const game: Game = await response.json();
-
+                games.push(game);
                 await delay(250);  // Delay applied between requests
 
                 const participant = game.info.participants.find(
@@ -94,22 +86,40 @@ export function useTFTData() {
 
                 if (participant) {
                     const placement: number = participant?.placement;
-                    participant.augments.forEach((augment: string) => addAugmentData(augment, placement))
-                    participant.units.forEach((unit: Unit) => addUnitData(unit.character_id, placement))
-                    participant.traits.forEach((trait: Trait) => trait.tier_current > 0 && addTraitData(trait.name, placement))
+                    participant.augments.forEach((augment: string) => {
+                        const existingPlacementsList: number[] = augmentPlacements.get(augment) || [];
+                        augmentPlacements = augmentPlacements.set(augment, [...existingPlacementsList, placement]);
+                    })
+
+                    participant.units.forEach((unit: Unit) => {
+                        const existingPlacementsList: number[] = unitPlacements.get(unit.character_id) || [];
+                        unitPlacements = unitPlacements.set(unit.character_id, [...existingPlacementsList, placement]);
+                    })
+
+                    participant.traits.forEach((trait: Trait) => {
+                        if (trait.tier_current > 0) {
+                            const existingPlacementsList: number[] = augmentPlacements.get(trait.name) || [];
+                            traitPlacements = traitPlacements.set(trait.name, [...existingPlacementsList, placement]);
+                        }
+                    })
                 }
+            }
+            setLoadingPercentage(0);
+            setIsLoading(false);
+            return {
+                games: games,
+                augmentPlacement: augmentPlacements,
+                traitPlacement: traitPlacements,
+                unitPlacement: unitPlacements,
             }
         } catch (err) {
             setError('Error fetching data');
-        } finally {
-            setLoadingPercentage(0);
-            setIsLoading(false);
+            return undefined;
         }
     }
 
     return {
-        analyzePlayerStatistic,
-        playerStatistic,
+        getPlayerStatistic,
         loadingPercentage,
         isLoading,
         error,
