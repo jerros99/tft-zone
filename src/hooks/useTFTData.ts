@@ -4,8 +4,8 @@ import {fetchGameById, fetchGameIdsByPuuid} from "../api/Game/GameApi";
 import {
     Game,
     Participant,
-    PlayerPlacementData,
-    PlayerStatistic,
+    SummonerPlacementData,
+    SummonerStatistic,
     Statistic,
     StatisticEnum,
     Trait,
@@ -36,8 +36,8 @@ export function useTFTData() {
         return statistics;
     }
 
-    async function getPlayerStatistic(summonerName: string): Promise<PlayerStatistic | undefined> {
-        const playerAnalyticsData: PlayerPlacementData | undefined = await getGameData(summonerName);
+    async function getSummonerStatistic(summonerName: string): Promise<SummonerStatistic | undefined> {
+        const playerAnalyticsData: SummonerPlacementData | undefined = await getGameData(summonerName);
 
         if (playerAnalyticsData) {
             return {
@@ -52,7 +52,7 @@ export function useTFTData() {
         return undefined;
     }
 
-    async function getGameData(summonerName: string): Promise<PlayerPlacementData | undefined> {
+    async function getGameData(summonerName: string): Promise<SummonerPlacementData | undefined> {
         const games: Game[] = [];
         let unitPlacements: Map<string, number[]> = new Map<string, number[]>();
         let augmentPlacements: Map<string, number[]> = new Map<string, number[]>();
@@ -119,7 +119,7 @@ export function useTFTData() {
     }
 
     return {
-        getPlayerStatistic,
+        getPlayerStatistic: getSummonerStatistic,
         loadingPercentage,
         isLoading,
         error,
