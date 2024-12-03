@@ -13,6 +13,8 @@ import {
 } from "../api/Game/GameType";
 import {SummonerType} from "../api/Summoner/SummonerType";
 import {delay} from "../utils/utils";
+import {Simulate} from "react-dom/test-utils";
+import load = Simulate.load;
 
 export function useTFTData() {
     const [isLoading, setIsLoading] = useState(false);
@@ -42,7 +44,6 @@ export function useTFTData() {
         if (playerAnalyticsData) {
             return {
                 games: playerAnalyticsData?.games,
-                augmentStatistic: getStatistic(playerAnalyticsData?.augmentPlacement, StatisticEnum.AUGMENT),
                 traitStatistic: getStatistic(playerAnalyticsData?.traitPlacement, StatisticEnum.TRAIT),
                 unitStatistic: getStatistic(playerAnalyticsData?.unitPlacement, StatisticEnum.UNIT),
             };
@@ -55,12 +56,8 @@ export function useTFTData() {
     async function getGameData(summonerName: string): Promise<SummonerPlacementData | undefined> {
         const games: Game[] = [];
         let unitPlacements: Map<string, number[]> = new Map<string, number[]>();
-        let augmentPlacements: Map<string, number[]> = new Map<string, number[]>();
         let traitPlacements: Map<string, number[]> = new Map<string, number[]>();
         try {
-            if (isLoading) {
-                return;
-            }
             setIsLoading(true);
             setError(null);
 
@@ -72,9 +69,11 @@ export function useTFTData() {
             const gameIds: string[] = await gamesResponse.json();
             let processedGameCount: number = 0;
 
+
             for (const gameId of gameIds) {
                 processedGameCount = processedGameCount + 1;
                 setLoadingPercentage(Math.round((processedGameCount / gameIds.length) * 100));
+
                 const response: Response = await fetchGameById(gameId);
                 const game: Game = await response.json();
                 games.push(game);
@@ -83,13 +82,8 @@ export function useTFTData() {
                 const participant = game.info.participants.find(
                     (participant: Participant) => participant.puuid === puuid
                 );
-
                 if (participant) {
                     const placement: number = participant?.placement;
-                    participant.augments.forEach((augment: string) => {
-                        const existingPlacementsList: number[] = augmentPlacements.get(augment) || [];
-                        augmentPlacements = augmentPlacements.set(augment, [...existingPlacementsList, placement]);
-                    })
 
                     participant.units.forEach((unit: Unit) => {
                         const existingPlacementsList: number[] = unitPlacements.get(unit.character_id) || [];
@@ -98,7 +92,7 @@ export function useTFTData() {
 
                     participant.traits.forEach((trait: Trait) => {
                         if (trait.tier_current > 0) {
-                            const existingPlacementsList: number[] = augmentPlacements.get(trait.name) || [];
+                            const existingPlacementsList: number[] = traitPlacements.get(trait.name) || [];
                             traitPlacements = traitPlacements.set(trait.name, [...existingPlacementsList, placement]);
                         }
                     })
@@ -108,7 +102,6 @@ export function useTFTData() {
             setIsLoading(false);
             return {
                 games: games,
-                augmentPlacement: augmentPlacements,
                 traitPlacement: traitPlacements,
                 unitPlacement: unitPlacements,
             }

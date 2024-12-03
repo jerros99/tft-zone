@@ -15,7 +15,6 @@ export type Info = {
 }
 
 export type Participant = {
-    augments: string[];
     gold_left: number;
     last_round: number;
     level: number;
@@ -55,14 +54,12 @@ export type Game = {
 export type SummonerPlacementData = {
     games: Game[],
     unitPlacement: Map<string, number[]>,
-    augmentPlacement: Map<string, number[]>,
     traitPlacement: Map<string, number[]>,
 }
 
 export enum StatisticEnum {
     TRAIT = "TRAIT",
     UNIT = "UNIT",
-    AUGMENT = "AUGMENT",
 }
 
 export type Statistic = {
@@ -76,7 +73,6 @@ export type Statistic = {
 
 export type SummonerStatistic = {
     games: Game[],
-    augmentStatistic: Statistic[],
     unitStatistic: Statistic[],
     traitStatistic: Statistic[],
 }
