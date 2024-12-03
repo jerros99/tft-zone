@@ -35,7 +35,7 @@ export function SummonersPage() {
                     <>
                         <div className="summoners-page__history">
                             {summonerStatistic.games.map((game: Game) => {
-                                const participant: Participant = game.info.participants.find((participant: Participant) => participant.riotIdGameName === summonerName)!
+                                const participant: Participant = game.info.participants.find((participant: Participant) => participant.riotIdGameName.toLowerCase() === summonerName!.toLowerCase())!
                                 return (
                                     <div className="summoners-page__game" key={game.metadata.match_id}>
                                         <div className="summoners-page__game-header">
